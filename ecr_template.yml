@@ -1,0 +1,16 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >-
+  A bare bones AWS Batch environment used to test the AWSBatchManager from AWSClusterManagers.jl.
+
+Resources:
+  ECRRepo:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: "awsclustermanagers-demo"
+
+Outputs:
+  AWSClusterManagersDemoRepoUri:
+    Description: Name of the ECR Repository used in the AWSClusterManagersDemo example
+    Value: !GetAtt ECRRepo.RepositoryUri
+    Export:
+      Name: AWSClusterManagersDemoRepoUri
