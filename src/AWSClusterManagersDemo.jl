@@ -15,7 +15,7 @@ addprocs(AWSBatchManager(NUM_WORKERS))
         x = rand()
         y = rand()
 
-        if (x^2 + y^2) < 1)
+        if ((x^2 + y^2) < 1)
             hits += 1
         end
     end
