@@ -29,8 +29,10 @@ function main()
     total_hits = 0
     total_throws = 0
 
-    for worker in workers()
-        hits, throws = remotecall_fetch(throw_darts, worker)
+    futures = [remotecall(throw_darts, worker) for worker in workers()]
+
+    for (worker, future) in enumerate(futures)
+        hits, throws = fetch(future)
         percentile = (hits / throws)
 
         println("Worker $(worker) landed $(hits) of $(throws), ($(percentile)%)!")
