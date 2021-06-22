@@ -8,14 +8,14 @@ addprocs(AWSBatchManager(NUM_WORKERS))
 
 @everywhere function throw_darts()
     MAX_THROW = 250_000
-    dart_count = Integer(floor(rand() * MAX_THROW))
+    dart_count = rand(1:MAX_THROW)
     hits = 0
 
     for _ in 1:dart_count
         x = rand()
         y = rand()
 
-        if ((x*x) + (y*y) < 1)
+        if (x^2 + y^2) < 1)
             hits += 1
         end
     end
