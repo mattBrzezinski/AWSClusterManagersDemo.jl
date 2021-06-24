@@ -1,0 +1,11 @@
+name = "AWSClusterManagersDemo"
+uuid = "95863c06-f841-5d09-9cdb-828d14d9621a"
+license = "MIT"
+version = "0.1.0"
+
+[deps]
+AWSClusterManagers = "69f5933c-162f-5d2f-a6d8-da72a0bfad91"
+
+[compat]
+AWSClusterManagers = "1"
+julia = "1"
