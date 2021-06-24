@@ -1,10 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 Description: >-
-<<<<<<< HEAD
-  A bare bones AWS Batch environment used to test the AWSBatchManager from AWSClusterManagers.jl.
-=======
   Creation of an ECR repo for AWSClusterManagersDemo example
->>>>>>> eaa4e97 (Initial working example)
 
 Resources:
   ECRRepo:
