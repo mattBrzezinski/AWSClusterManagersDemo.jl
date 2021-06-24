@@ -14,28 +14,49 @@ On-Demand instances at the time of writing are charged on a per-minute basis. An
 To launch this yourself:
 
 1. Store your AWS account ID in an variable
-   	`AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)`
+   	```
+    AWS_ACCOUNT_ID=$(aws sts get-caller-identity --query Account --output text)
+    ```
 1. Create a new ECR (Elastic Cloud Registry) repository to host you Docker image as:
-    `aws cloudformation create-stack --template-body file://ecr_template.yml --stack-name awsclustermanagers-ecr`
-2. Build the Docker image for this project
-    `docker build -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/awsclustermanagers-demo:latest .`
-3. Push the Docker image to the ECR repo created in the second step
-    `docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/awsclustermanagers-demo:latest`
+    ```
+    aws cloudformation create-stack --template-body file://ecr_template.yml --stack-name awsclustermanagers-ecr
+    ```
+1. Build the Docker image for this project
+    ```
+    docker build -t $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/awsclustermanagers-demo:latest .
+    ```
+1. Push the Docker image to the ECR repo created in the second step
+    ```
+    docker push $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/awsclustermanagers-demo:latest
+    ```
 1. Deploy the remainder of the Batch resources required to run the demo
-    `aws cloudformation create-stack --template-body file://batch_template.yml --stack-name awsclustermanagers-batch`
+    ```
+    aws cloudformation create-stack --template-body file://batch_template.yml --stack-name awsclustermanagers-batch
+    ```
 1. Submit your job to AWS Batch!
-    `aws batch submit-job --job-name aws-batch-demo --job-definition AWSClusterManagersDemo-Job --job-queue awsclustermanagers-demo`
-1. To view the results simply run
-    `STREAM_NAME=$(aws logs describe-log-streams --log-group-name /aws/batch/job --query logStreams[1].logStreamName --output text)`
-    `aws logs get-log-events --log-group-name /aws/batch/job --log-stream-name $STREAM_NAME --output text`
+    ```
+    aws batch submit-job --job-name aws-batch-demo --job-definition AWSClusterManagersDemo-Job --job-queue awsclustermanagers-demo
+    ```
+1. To view the results simply run:
+    ```
+    STREAM_NAME=$(aws logs describe-log-streams --log-group-name /aws/batch/job --query logStreams[1].logStreamName --output text)
+    aws logs get-log-events --log-group-name /aws/batch/job --log-stream-name $STREAM_NAME --output text
+    ```
 
 ## Teardown
 
 1. Deleting the Batch stack is simply:
-    `aws cloudformation delete-stack --stack-name awsclustermanagers-batch`
+    ```
+    aws cloudformation delete-stack --stack-name awsclustermanagers-batch
+    ```
 1. Deleting the ECR stack is slightly more complex
-    1. First we need to remove all images from the ECR repo by running:
-        `IMAGES_TO_DELETE=$( aws ecr list-images --repository-name awsclustermanagers-demo --filter "tagStatus=ANY" --query 'imageIds[*]' --output json )`
-        `aws ecr batch-delete-image --repository-name awsclustermanagers-demo --image-ids "$IMAGES_TO_DELETE"`
-    1. We can then delete the ECR stack by running:
-        `aws cloudformation delete-stack --stack-name awsclustermanagers-ecr`
+    * First we need to remove all images from the ECR repo by running:
+        ```
+        IMAGES_TO_DELETE=$( aws ecr list-images --repository-name awsclustermanagers-demo --filter "tagStatus=ANY" --query 'imageIds[*]' --output json )
+        aws ecr batch-delete-image --repository-name awsclustermanagers-demo --image-ids "$IMAGES_TO_DELETE"
+        ```
+
+    * We can then delete the ECR stack by running:
+        ```
+        aws cloudformation delete-stack --stack-name awsclustermanagers-ecr
+        ```
